@@ -59,11 +59,10 @@ Compiler bf_compiler_new(char* code) {
 }
 
 /*
-    Free compiler and maloced instructions buffer
+    Free compiler and maloced instructions array
 */
 int bf_compiler_free(Compiler* compiler) {
     free(compiler->instructions);
-    free(compiler);
 
     return 1;
 }
@@ -74,11 +73,16 @@ int bf_compiler_free(Compiler* compiler) {
         operand to STDOUT.
 */
 int bf_compiler_dump(Compiler* compiler) {
-    for (int i = 0; i < compiler->count; i++) {
-        printf("Instruction: {\n");
-        printf("  opcode: %d\n", compiler->instructions[i].opcode);
-        printf("  operand: %d\n", compiler->instructions[i].operand);
-        printf("}\n");
+    Instruction* instruction;
+    
+    for (instruction = compiler->instructions;
+         instruction->opcode != OP_EOF;
+         instruction++)
+    {
+        char buffer[255];
+
+        bf_instruction_tostring(instruction, buffer, 255);
+        printf("%s\n", buffer);
     }
 }
 
@@ -87,7 +91,7 @@ int bf_compiler_dump(Compiler* compiler) {
         Iterates through code, when valid character is found we check the
         last instruction, if matching we increment the operand to reduce 
         instruction count.  Additionally instructions are counted, the 
-        instructions buffer is reallocated, and count is saved to Compiler
+        instructions array is reallocated, and count is saved to Compiler
         pointer.
 */
 int bf_compiler_compile(Compiler* compiler) {
@@ -96,7 +100,7 @@ int bf_compiler_compile(Compiler* compiler) {
     char* ch = compiler->code;
     Instruction* instruction = compiler->instructions;
 
-    // Add the OP_BOF instruction to head of buffer
+    // Add the OP_BOF instruction to start of array
     count++;
     instruction->opcode = OP_BOF;
     instruction->operand = 0;
@@ -154,7 +158,7 @@ int bf_compiler_compile(Compiler* compiler) {
     instruction->opcode = OP_EOF;
     instruction->operand = 0;
 
-    // Save instruction count, and realloc instructions buffer
+    // Save instruction count, and realloc instructions array
     compiler->count = count;
     realloc(compiler->instructions, sizeof(Instruction) * count);
 

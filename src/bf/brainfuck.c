@@ -10,8 +10,16 @@ int bf_run(char* buffer) {
 
         return 0;
     }
-
     if (!bf_vm_run(&vm, compiler.instructions)) {
         printf("Encountered runtime error!\n");
+
+        bf_compiler_free(&compiler);
+        bf_vm_free(&vm);
+
+        return 0;
     }
+
+    bf_vm_free(&vm);
+
+    return 1;
 }

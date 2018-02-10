@@ -2,7 +2,7 @@
 
 /*
     New instance of Vm
-        malloc register buffer to sizeof(short) * register_count
+        malloc register array to sizeof(short) * register_count
 */
 Vm bf_vm_new(size_t register_count) {
     Vm vm = { 0 };
@@ -19,7 +19,6 @@ Vm bf_vm_new(size_t register_count) {
 /**/
 int bf_vm_free(Vm* vm) {
     free(vm->registers);
-    free(vm);
 }
 
 /*
@@ -40,12 +39,12 @@ int bf_vm_run(Vm* vm, Instruction* instructions) {
             (*vm->pointer) -= instruction->operand;
             break;
         case OP_PUT:
-            // print n times
+            // print stdout n times
             for (short i = 0; i < instruction->operand; i++)
                 putchar((int)*vm->pointer);
             break;
         case OP_GET:
-            // get n times
+            // read stdin n times
             for (short i = 0; i < instruction->operand; i++)
                 *vm->pointer = getchar();
             break;
