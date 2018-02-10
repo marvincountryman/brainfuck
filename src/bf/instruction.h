@@ -1,8 +1,6 @@
 #ifndef _BF_INSTRUCTION_H_
 #define _BF_INSTRUCTION_H_
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #define OP_EOF   0x00   // End of file
 #define OP_BOF   0x01   // Beginning of file
 #define OP_MOV   0x02   // Move pointer 
